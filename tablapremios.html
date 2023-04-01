@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Tabla de personas</title>
+    <style>
+        
+        div {
+            display: inline-block;
+        }
+        table{
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 1rem;
+            background-color: #fff;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+        
+        th, td {
+            border: 1px solid black;
+            padding: 5px;
+        }
+        
+		.rojo {
+			background-color: rgb(245, 172, 172);
+		}
+
+		.verde {
+			background-color: rgb(130, 235, 130);
+		}
+	</style>
+    </style>
+</head>
+<body>
+    <div id="tb-primitva">
+        <table id="tb-primitva">
+            <thead>
+                <tr>
+                    <th>Dia</th>
+                    <th>Primitiva</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-premios-primitiva">
+            </tbody>
+        </table>
+    </div>
+	<div id="tb-euromillon">
+        <table id="tb-euromillon">
+            <thead>
+                <tr>
+                    <th>Dia</th>
+                    <th>Euromillon</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-premios-euromillon">
+            </tbody>
+        </table>
+    </div>
+    <div id="tb-premios">
+        <table id="tb-premios">
+            <thead>
+                <tr>
+                    <th>Primitiva</th>
+                    <th>Euromillon</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-premios">
+            </tbody>
+        </table>
+    </div>
+	<script>
+		// Carga los datos desde el archivo JSON
+        
+		document.addEventListener("DOMContentLoaded", function(event) {
+            fetch('resultado.json')
+                .then(response => response.json())
+                .then(data => {
+                    const tabla_primitiva = document.getElementById('tabla-premios-primitiva');
+                    const resultado1 = data["Primitiva"];
+                    const sinPremio = /^Boleto sin premio .*$/;
+                    const premio = /[0-9]+(,[0-9]*)? €/;
+                    var premioBonoloto = 0;
+                    var premioEuromillon = 0;
+                    resultado1.forEach(element => {
+                        // console.log(element);
+                        const fila = document.createElement('tr');
+                        if (sinPremio.test(element.premio)) {
+                            element.premio = "0 €";
+                            fila.innerHTML = `
+                                <td>${element.fecha}</td>
+                                <td class="rojo">${element.premio}</td>
+                            `;
+                        } else {
+                            premioBonoloto += parseFloat(element.premio.match(premio)[0].replace(",", "."));
+                            element.premio = element.premio.match(premio)[0];
+                            fila.innerHTML = `
+                                <td>${element.fecha}</td>
+                                <td class="verde">${element.premio}</td>
+                            `;
+                        }
+                        
+                        tabla_primitiva.appendChild(fila);
+                    });
+                    console.log(premioBonoloto)
+                    const tabla_euromillon = document.getElementById('tabla-premios-euromillon');
+                    const resultado2 = data["Euromillon"];
+                    // console.log(resultado);
+
+                    resultado2.forEach(element => {
+                        // console.log(element);
+                        const fila = document.createElement('tr');
+                        const dineroganador = document.createElement('tr');
+                        if (sinPremio.test(element.premio)) {
+                            element.premio = "0 €";
+                            fila.innerHTML = `
+                                <td>${element.fecha}</td>
+                                <td class="rojo">${element.premio}</td>
+                            `;
+                        } else {
+                            premioEuromillon += parseFloat(element.premio.match(premio)[0].replace(",", "."));
+                            element.premio = element.premio.match(premio)[0];
+                            fila.innerHTML = `
+                                <td>${element.fecha}</td>
+                                <td class="verde">${element.premio}</td>
+                            `;
+                        }
+                        dineroganador.innerHTML = `
+                                <td>${premioEuromillon}</td>
+                              
+                            `;
+                        tabla_euromillon.appendChild(fila);
+                        
+                        
+                    });
+                    const tabla_premios = document.getElementById('tabla-premios');
+                    const fila_premios = document.createElement('tr');
+                    if (premioBonoloto > premioEuromillon) {
+                        fila_premios.innerHTML = `
+                                <td class="verde">${premioBonoloto}</td>
+                                <td>${premioEuromillon}</td>
+                            `;
+                    } else if (premioBonoloto < premioEuromillon) {
+                        fila_premios.innerHTML = `
+                                <td>${premioBonoloto}</td>
+                                <td class="verde">${premioEuromillon}</td>
+                            `;
+                    } 
+                    tabla_premios.appendChild(fila_premios);
+                }
+
+                    
+                )
+                .catch(error => console.error(error));
+        });
+	</script>
+</body>
+</html>
