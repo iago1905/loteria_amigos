@@ -1,9 +1,9 @@
 # Comprobar Euromillon
 
-_Hace una comparativa de premios de Primitiva y Euromillon para los mismos numeros, haciendo scrapping a la web:
-    -https://www.comprobareuromillones.com/
-    -https://www.primitivacomprobar.es/
-_
+_Hace una comparativa de premios de Primitiva y Euromillon para los mismos numeros, haciendo scrapping a la web:_
+    _-https://www.comprobareuromillones.com/_ 
+    _-https://www.primitivacomprobar.es/_
+
 
 
 ## Despliegue 📦
